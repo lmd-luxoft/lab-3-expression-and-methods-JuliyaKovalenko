@@ -39,7 +39,9 @@ namespace XO
                 raw_cell = Console.ReadLine();
             }
             while (!Int32.TryParse(raw_cell, out cell));
-            while (cell > 9 || cell < 1 || cells[cell - 1] == 'O' || cells[cell - 1] == 'X')
+
+            
+           while (IsOutOfRange(cell) || IsNotYourTurn(cell))
             {
                 do
                 {
@@ -53,25 +55,46 @@ namespace XO
             else cells[cell - 1] = 'O';
             
         }
+
+        static bool IsNotYourTurn(int cell)
+        {
+            return cells[cell - 1] == 'O' || cells[cell - 1] == 'X';
+        }
+
+        static bool IsOutOfRange (int cell)
+        {
+            return cell > 9 || cell < 1;
+        }
+     
         static char check()
         {
             for (int i = 0; i < 3; i++)
-                if (cells[i * 3] == cells[i * 3 + 1] && cells[i * 3 + 1] == cells[i * 3 + 2])
+            {
+                if (IsHorisontalWin(i) || IsVerticalWin(i) || IsDiagonalWin())
                     return cells[i];
-                else if (cells[i] == cells[i + 3] && cells[i + 3] == cells[i + 6])
-                    return cells[i];
-                else if ((cells[2] == cells[4] && cells[4] == cells[6]) || (cells[0] == cells[4] && cells[4] == cells[8]))
-                    return cells[i];
+            }
             return '-';
         }
 
+        static bool IsHorisontalWin(int i)
+        {
+            return (cells[i * 3] == cells[i * 3 + 1] && cells[i * 3 + 1] == cells[i * 3 + 2]);
+        }
+        static bool IsVerticalWin(int i)
+        {
+            return (cells[i] == cells[i + 3] && cells[i + 3] == cells[i + 6]);
+        }
+
+        static bool IsDiagonalWin()
+        {
+            return (cells[2] == cells[4] && cells[4] == cells[6]) || (cells[0] == cells[4] && cells[4] == cells[8]);
+        }
         static void result()
         {
             if (win == 'X')
                 Console.WriteLine($"{PlayerName1} вы  выиграли поздравляем {PlayerName2} а вы проиграли...");
             else if (win == 'O')
                 Console.WriteLine($"{PlayerName2} вы  выиграли поздравляем {PlayerName1} а вы проиграли...");
-
         }
 
         static void Main(string[] args)
